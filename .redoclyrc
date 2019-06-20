@@ -1,0 +1,8 @@
+specFileName: swagger.json
+apiTitle: Schall und Rauch Festival App API
+splitSpec: false
+codeSamples: false
+swaggerUI: true
+travis: true
+repo: Schall-Rauch/festival-app-api-definition
+oasVersion: '2.0'
