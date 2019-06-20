@@ -1,0 +1,376 @@
+swagger: '2.0'
+info:
+  description: This is the api for Schall und Rauch Festival App
+  version: 0.1.0
+  title: Schall und Rauch Festival App API
+  contact:
+    email: skittles@schall-rauch.rocks
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+host: app.schall-rauch.rocks
+basePath: /api
+tags:
+  - name: general
+    description: The path for general technical endpoints
+  - name: status
+    description: The path for endpoints to check if there is new data
+  - name: content
+    description: The path for endpoints which return static data/content to display
+  - name: pfinder
+    description: The path for all endpoints for the pfinder part of the app. TBA
+schemes:
+  - https
+  - http
+paths:
+  /general/version:
+    get:
+      tags:
+        - general
+      summary: Get the current version and all still supported versions of the app
+      description: Returns a JSON with the current and all supported versions of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/version'
+  /general/suggestedPollInterval:
+    get:
+      tags:
+        - general
+      summary: Get the currently proposed interval to poll the api
+      description: Returns a JSON with the suggested poll interval for general information as well as data status.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/suggestedPollInterval'
+  /status/totalContent:
+    get:
+      tags:
+        - status
+      summary: Get the current unique identifier for all content.
+      description: 'If the returned identifier matches the one of the last request, don''t send any more requests until it is time to do the next poll.'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/statusTotal'
+  /status/seperated:
+    get:
+      tags:
+        - status
+      summary: Get the current unique identifier for the content seperate for each content topic.
+      description: Only request this if the totalContent endpoint returned a different identifier then the one of the last request. Only request the real data if the returned identifier for that topic does not match the one of the last request.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/statusSeperated'
+  /content/travel:
+    get:
+      tags:
+        - content
+      summary: Get all information about travel
+      description: Get all current information to display in the 'An-/Abreise' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentTravel'
+  /content/bring:
+    get:
+      tags:
+        - content
+      summary: Get all information about what to bring
+      description: Get all current information to display in the 'Packliste' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentBring'
+  /content/map:
+    get:
+      tags:
+        - content
+      summary: Get all related information for the festival app
+      description: Get all additional information to display in the 'Lageplan' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentMap'
+  /content/map/image:
+    get:
+      tags:
+        - content
+      summary: Get the map itself
+      description: Get the png that is the map
+      produces:
+        - image/png
+      responses:
+        '200':
+          description: successful operation
+  /content/program:
+    get:
+      tags:
+        - content
+      summary: Get all information about the program
+      description: Get all current information to display in the 'Programm' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentProgram'
+  /content/food:
+    get:
+      tags:
+        - content
+      summary: Get all information about the food
+      description: Get all current information to display in the 'Verpflegung' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentFood'
+  /content/hygiene:
+    get:
+      tags:
+        - content
+      summary: Get all information about hygiene
+      description: Get all current information to display in the 'Hygiene' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentHygiene'
+  /content/volunteer:
+    get:
+      tags:
+        - content
+      summary: Get all information about colunteering
+      description: Get all current information to display in the 'Mithelfen' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentVolunteer'
+  /content/emergency:
+    get:
+      tags:
+        - content
+      summary: Get all information about emergancies
+      description: Get all current information to display in the 'Im Notfall' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentEmergency'
+  /content/tipps:
+    get:
+      tags:
+        - content
+      summary: Get all information about tipps
+      description: Get all current information to display in the 'Festival Hacks' tab of the app
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentTipps'
+  /content/news:
+    get:
+      tags:
+        - content
+      summary: Get all news to display in the app
+      description: Get all current news to display in app and to create a notification for.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentNews'
+definitions:
+  version:
+    type: object
+    properties:
+      currentVersion:
+        type: string
+        description: The most recent version identifier of the app.
+      supportedVersions:
+        type: array
+        description: A list with all supported version identifiers of the app.
+        items:
+          type: string
+  suggestedPollInterval:
+    type: object
+    properties:
+      general:
+        type: integer
+        format: int64
+        description: The suggested number of seconds between each poll of the general endpoints
+      status:
+        type: integer
+        format: int64
+        description: The suggested number of seconds between each poll of the status endpoints
+      pfinder:
+        type: integer
+        format: int64
+        description: The suggested number of seconds between each poll of the pfinder endpoints
+  statusTotal:
+    type: object
+    properties:
+      identifier:
+        type: string
+        description: The unique content identifier for all current data available in the content path
+  statusSeperated:
+    type: object
+    properties:
+      identifier-travel:
+        type: string
+        description: The unique content identifier for all current data available in the content/travel path
+      identifier-bring:
+        type: string
+        description: The unique content identifier for all current data available in the content/bring path
+      identifier-map:
+        type: string
+        description: The unique content identifier for all current data available in the content/map path
+      identifier-program:
+        type: string
+        description: The unique content identifier for all current data available in the content/program path
+      identifier-food:
+        type: string
+        description: The unique content identifier for all current data available in the content/food path
+      identifier-hygiene:
+        type: string
+        description: The unique content identifier for all current data available in the content/hygiene path
+      identifier-volunteer:
+        type: string
+        description: The unique content identifier for all current data available in the content/volunteer path
+      identifier-emergency:
+        type: string
+        description: The unique content identifier for all current data available in the content/emergency path
+      identifier-tipps:
+        type: string
+        description: The unique content identifier for all current data available in the content/tipps path
+      identifier-news:
+        type: string
+        description: The unique content identifier for all current data available in the content/news path
+  contentTravel:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text for this tab.
+  contentBring:
+    type: object
+    properties:
+      items:
+        type: array
+        description: A list of items to bring.
+        items:
+          type: string
+  contentMap:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text for this tab.
+  contentProgram:
+    type: object
+    properties:
+      lineup:
+        type: array
+        description: A list of bands which will play when.
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the band
+            date:
+              type: integer
+              format: int64
+              description: The unix time when the band will play.
+      workshops:
+        type: array
+        description: A list of workshops which will held.
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the workshop
+            description:
+              type: string
+              description: The description of the workshop
+            date:
+              type: integer
+              format: int64
+              description: The unix time when the workshop will be held.
+  contentFood:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text for this tab.
+  contentHygiene:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text for this tab.
+  contentVolunteer:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text for this tab.
+  contentEmergency:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The text for this tab.
+  contentTipps:
+    type: object
+    properties:
+      items:
+        type: array
+        description: A list of tipps
+        items:
+          type: string
+  contentNews:
+    type: object
+    properties:
+      items:
+        type: array
+        description: A list of news.
+        items:
+          type: string
