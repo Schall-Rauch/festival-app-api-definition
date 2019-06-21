@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   description: This is the api for Schall und Rauch Festival App
-  version: 0.1.0
+  version: 0.2.0
   title: Schall und Rauch Festival App API
   contact:
     email: skittles@schall-rauch.rocks
@@ -21,7 +21,6 @@ tags:
     description: The path for all endpoints for the pfinder part of the app. TBA
 schemes:
   - https
-  - http
 paths:
   /general/version:
     get:
@@ -164,6 +163,17 @@ paths:
           description: successful operation
           schema:
             $ref: '#/definitions/contentHygiene'
+  /content/hygiene/image:
+    get:
+      tags:
+        - content
+      summary: Get the map of the hygiene relevant points
+      description: Get the png that is the map
+      produces:
+        - image/png
+      responses:
+        '200':
+          description: successful operation
   /content/volunteer:
     get:
       tags:
@@ -190,6 +200,17 @@ paths:
           description: successful operation
           schema:
             $ref: '#/definitions/contentEmergency'
+  /content/emergency/image:
+    get:
+      tags:
+        - content
+      summary: Get the map of the emergency relevant points
+      description: Get the png that is the map
+      produces:
+        - image/png
+      responses:
+        '200':
+          description: successful operation
   /content/tipps:
     get:
       tags:
@@ -216,6 +237,19 @@ paths:
           description: successful operation
           schema:
             $ref: '#/definitions/contentNews'
+  /content/rules:
+    get:
+      tags:
+        - content
+      summary: Get all rules
+      description: Get all rules for the rules tab of the app.
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/contentRules'
 definitions:
   version:
     type: object
@@ -282,6 +316,9 @@ definitions:
       identifier-news:
         type: string
         description: The unique content identifier for all current data available in the content/news path
+      identifier-rules:
+        type: string
+        description: The unique content identifier for all current data available in the content/rules path
   contentTravel:
     type: object
     properties:
@@ -295,7 +332,14 @@ definitions:
         type: array
         description: A list of items to bring.
         items:
-          type: string
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the item
+            category:
+              type: string
+              description: The category of the item
   contentMap:
     type: object
     properties:
@@ -314,13 +358,19 @@ definitions:
             name:
               type: string
               description: The name of the band
+            description:
+              type: string
+              description: The description of the band
             date:
               type: integer
               format: int64
               description: The unix time when the band will play.
+            location:
+              type: string
+              description: The name of the location where the band will play.
       workshops:
         type: array
-        description: A list of workshops which will held.
+        description: A list of workshops which will be held.
         items:
           type: object
           properties:
@@ -334,12 +384,21 @@ definitions:
               type: integer
               format: int64
               description: The unix time when the workshop will be held.
+            location:
+              type: string
+              description: The name of the location where the workshop will be.
   contentFood:
     type: object
     properties:
-      text:
+      general:
         type: string
-        description: The text for this tab.
+        description: The text for the general subtab of this tab.
+      central:
+        type: string
+        description: The text for the central subtab of this tab.
+      foodlane:
+        type: string
+        description: The text for the foodlane subtab of this tab.
   contentHygiene:
     type: object
     properties:
@@ -374,3 +433,18 @@ definitions:
         description: A list of news.
         items:
           type: string
+  contentRules:
+    type: object
+    properties:
+      items:
+        type: array
+        description: A list of rules.
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name/heading of the rule.
+            text:
+              type: string
+              description: The text of the rule.
